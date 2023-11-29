@@ -21,7 +21,7 @@ jobs:
 
       - name: Start Minikube
         run: |
-           minikube start --driver=docker --cni=calico --extra-config=kubelet.network-plugin=cni
+          sudo minikube start --driver=docker --cni=calico --extra-config=kubelet.network-plugin=cni
 
       - name: Set up kubectl
         run: |
