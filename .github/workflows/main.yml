@@ -47,10 +47,6 @@ jobs:
         run: |
           docker build -t ankeetchauhan505/hello-world-app:latest .
 
-      - name: Push Docker Image (Optional)
-        run: |
-          docker push ankeetchauhan505/hello-world-app:latest
-
       - name: Deploy to Minikube
         run: |
           kubectl create deployment hello-world-app --image=your-docker-username/hello-world-app:latest --port=8080
