@@ -58,11 +58,8 @@ jobs:
           NODE_PORT=$(kubectl get service hello-world-app -o jsonpath='{.spec.ports[0].nodePort}')
           echo "NodePort: $NODE_PORT"
 
-     # - name: Access Application
-       # run: |
-         # curl http://localhost:$NODE_PORT
-     #for monitoring and logging    
-    - name: Install Prometheus, Node Exporter, and Grafana
+      # For monitoring and logging    
+      - name: Install Prometheus, Node Exporter, and Grafana
         run: |
           # Install Prometheus
           kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-config-map.yaml
@@ -80,4 +77,3 @@ jobs:
 
           # Wait for Grafana to be ready
           kubectl wait --for=condition=available deployment/grafana --timeout=300s
-     
