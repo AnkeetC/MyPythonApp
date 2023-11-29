@@ -57,16 +57,15 @@ jobs:
 
       - name: Install Prometheus, Node Exporter, and Grafana
         run: |
-         # Install Prometheus
-         curl -LO https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-deployment.yaml
-         kubectl apply -f prometheus-deployment.yaml
+          sudo apt update
+          sudo apt install prometheus
+          sudo systemctl start prometheus
+          sudo systemctl enable prometheus
 
           # Install Prometheus Node Exporter
-          curl -LO https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-amd64.tar.gz
-          tar xzf node_exporter-1.2.2.linux-amd64.tar.gz
-          kubectl create configmap node-exporter-config --from-file=node_exporter-1.2.2.linux-amd64/node-exporter.yaml
-          kubectl apply -f https://raw.githubusercontent.com/prometheus/node_exporter/master/deploy/kube/node-exporter-service-account.yaml
-          kubectl apply -f https://raw.githubusercontent.com/prometheus/node_exporter/master/deploy/kube/node-exporter-daemonset.yaml
+          sudo apt install prometheus-node-exporter
+          sudo systemctl start prometheus-node-exporter
+          sudo systemctl enable prometheus-node-exporter        
           
           # Install Grafana
           kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/values.yaml
