@@ -74,7 +74,12 @@ jobs:
           sudo systemctl enable prometheus-node-exporter        
           
           # Install Grafan
-          sudo snap install grafana
-          sudo systemctl grafana-server start
+          sudo add-apt-repository "deb https://packages.grafana.com/oss/deb stable main"          sudo mkdir -p /etc/apt/keyrings/
+          sudo apt-get update
+          sudo apt install grafana
+          sudo systemctl start grafana-server
+          sudo systemctl enable grafana-server
+          
+
         
 
