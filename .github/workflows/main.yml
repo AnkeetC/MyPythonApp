@@ -29,7 +29,7 @@ jobs:
 
       - name: Start Minikube
         run: |
-          sudo minikube start --driver=docker --extra-config=kubelet.cgroup-driver=systemd
+           minikube start --driver=docker --extra-config=kubelet.cgroup-driver=systemd
 
       - name: Set up kubectl (again, as Minikube may change kubeconfig)
         run: |
