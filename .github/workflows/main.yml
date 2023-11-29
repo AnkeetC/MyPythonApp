@@ -74,7 +74,9 @@ jobs:
           sudo systemctl enable prometheus-node-exporter        
           
           # Install Grafan
-          sudo apt install grafana
+          sudo apt install snapd
+          sudo apt update
+          sudo snap install grafana
           sudo systemctl start grafana-server
           sudo systemctl enable grafana-server
 
