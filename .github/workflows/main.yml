@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -13,16 +13,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up kubectl
+      - name: Set up kubectl and Minikube
         run: |
           sudo apt-get update && sudo apt-get install -y apt-transport-https
           curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
           echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
           sudo apt-get update
           sudo apt-get install -y kubectl
-
-      - name: Set up Minikube
-        run: |
+          
           curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
           chmod +x minikube
           sudo mv minikube /usr/local/bin/
@@ -51,36 +49,33 @@ jobs:
         run: |
           kubectl create deployment hello-world-app --image=ankeetchauhan505/hello-world-app:latest --port=8080
           kubectl expose deployment hello-world-app --type=NodePort --port=8080
-          kubectl get service hello-world-app -o jsonpath='{.spec.ports[0].nodePort}'
 
       - name: Get NodePort
         run: |
           NODE_PORT=$(kubectl get service hello-world-app -o jsonpath='{.spec.ports[0].nodePort}')
           echo "NodePort: $NODE_PORT"
 
-      # For monitoring and logging    
       - name: Install Prometheus, Node Exporter, and Grafana
-  run: |
-   
-    kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/alertmanagerconfigs.monitoring.coreos.com.yaml
-    kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/alertmanagers.monitoring.coreos.com.yaml
-    kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/podmonitors.monitoring.coreos.com.yaml
-    kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/probes.monitoring.coreos.com.yaml
-    kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/prometheuses.monitoring.coreos.com.yaml
-    kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/prometheusrules.monitoring.coreos.com.yaml
-    kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/servicemonitors.monitoring.coreos.com.yaml
-    kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/thanosrulers.monitoring.coreos.com.yaml
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/alertmanagerconfigs.monitoring.coreos.com.yaml
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/alertmanagers.monitoring.coreos.com.yaml
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/podmonitors.monitoring.coreos.com.yaml
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/probes.monitoring.coreos.com.yaml
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/prometheuses.monitoring.coreos.com.yaml
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/prometheusrules.monitoring.coreos.com.yaml
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/servicemonitors.monitoring.coreos.com.yaml
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/thanosrulers.monitoring.coreos.com.yaml
 
-    kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-prometheus.yaml
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-prometheus.yaml
 
-    # Install Prometheus Node Exporter
-    kubectl apply -f https://raw.githubusercontent.com/prometheus/node_exporter/main/deploy/kube/node-exporter-pod.yaml
+          # Install Prometheus Node Exporter
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/node_exporter/main/deploy/kube/node-exporter-pod.yaml
 
-    # Install Grafana
-    kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/values.yaml
-    kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/serviceaccount.yaml
-    kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/deployment.yaml
-    kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/service.yaml
+          # Install Grafana
+          kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/values.yaml
+          kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/serviceaccount.yaml
+          kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/deployment.yaml
+          kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/service.yaml
 
-    # Wait for Grafana to be ready
-    kubectl wait --for=condition=available deployment/grafana --timeout=300s
+          # Wait for Grafana to be ready
+          kubectl wait --for=condition=available deployment/grafana --timeout=300s
