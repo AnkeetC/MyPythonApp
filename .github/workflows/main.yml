@@ -57,20 +57,17 @@ jobs:
 
       - name: Install Prometheus, Node Exporter, and Grafana
         run: |
-          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/alertmanagerconfigs.monitoring.coreos.com.yaml
-          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/alertmanagers.monitoring.coreos.com.yaml
-          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/podmonitors.monitoring.coreos.com.yaml
-          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/probes.monitoring.coreos.com.yaml
-          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/prometheuses.monitoring.coreos.com.yaml
-          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/prometheusrules.monitoring.coreos.com.yaml
-          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/servicemonitors.monitoring.coreos.com.yaml
-          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-operator-crd/thanosrulers.monitoring.coreos.com.yaml
-
-          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-prometheus.yaml
+         # Install Prometheus
+         curl -LO https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-deployment.yaml
+         kubectl apply -f prometheus-deployment.yaml
 
           # Install Prometheus Node Exporter
-          kubectl apply -f https://raw.githubusercontent.com/prometheus/node_exporter/main/deploy/kube/node-exporter-pod.yaml
-
+          curl -LO https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-amd64.tar.gz
+          tar xzf node_exporter-1.2.2.linux-amd64.tar.gz
+          kubectl create configmap node-exporter-config --from-file=node_exporter-1.2.2.linux-amd64/node-exporter.yaml
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/node_exporter/master/deploy/kube/node-exporter-service-account.yaml
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/node_exporter/master/deploy/kube/node-exporter-daemonset.yaml
+          
           # Install Grafana
           kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/values.yaml
           kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/serviceaccount.yaml
