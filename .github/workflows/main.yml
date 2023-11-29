@@ -58,6 +58,26 @@ jobs:
           NODE_PORT=$(kubectl get service hello-world-app -o jsonpath='{.spec.ports[0].nodePort}')
           echo "NodePort: $NODE_PORT"
 
-      - name: Access Application
+     # - name: Access Application
+       # run: |
+         # curl http://localhost:$NODE_PORT
+     #for monitoring and logging    
+    - name: Install Prometheus, Node Exporter, and Grafana
         run: |
-          curl http://localhost:$NODE_PORT
+          # Install Prometheus
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-config-map.yaml
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-rbac.yaml
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/prometheus/main/documentation/examples/prometheus-k8s/prometheus-prometheus.yaml
+
+          # Install Prometheus Node Exporter
+          kubectl apply -f https://raw.githubusercontent.com/prometheus/node_exporter/master/deploy/kube/node-exporter-pod.yaml
+
+          # Install Grafana
+          kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/values.yaml
+          kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/serviceaccount.yaml
+          kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/deployment.yaml
+          kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/service.yaml
+
+          # Wait for Grafana to be ready
+          kubectl wait --for=condition=available deployment/grafana --timeout=300s
+     
