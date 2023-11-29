@@ -55,12 +55,23 @@ jobs:
           NODE_PORT=$(kubectl get service hello-world-app -o jsonpath='{.spec.ports[0].nodePort}')
           echo "NodePort: $NODE_PORT"
 
+     #  - name: Apply Deployment and Service YAMLs
+       #  run: |
+        #  kubectl apply -f deployment.yml
+        #  kubectl apply -f service.yml
+        #  kubectl get service hello-world-app -o jsonpath='{.spec.ports[0].nodePort}' > nodeport.txt
+        #  cat nodeport.txt
+   
+
      # - name: Access Application
        # run: |
         #curl http://localhost:$NODE_PORT
 
-      
-
+      # - name: Access Application
+        # run: |
+        #  NODE_PORT=$(cat nodeport.txt)
+        #  curl http://localhost:$NODE_PORT
+ 
       - name: Install Prometheus, Node Exporter, and Grafana
         run: |
           sudo apt update
