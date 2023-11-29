@@ -55,6 +55,12 @@ jobs:
           NODE_PORT=$(kubectl get service hello-world-app -o jsonpath='{.spec.ports[0].nodePort}')
           echo "NodePort: $NODE_PORT"
 
+     # - name: Access Application
+       # run: |
+        #curl http://localhost:$NODE_PORT
+
+      
+
       - name: Install Prometheus, Node Exporter, and Grafana
         run: |
           sudo apt update
@@ -67,11 +73,8 @@ jobs:
           sudo systemctl start prometheus-node-exporter
           sudo systemctl enable prometheus-node-exporter        
           
-          # Install Grafana
-          kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/values.yaml
-          kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/serviceaccount.yaml
-          kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/deployment.yaml
-          kubectl apply -f https://raw.githubusercontent.com/grafana/helm-charts/main/charts/grafana/templates/service.yaml
+          # Install Grafan
+          sudo apt install grafana
+          sudo systemctl start grafana-server
+          sudo systemctl enable grafana-server
 
-          # Wait for Grafana to be ready
-          kubectl wait --for=condition=available deployment/grafana --timeout=300s
