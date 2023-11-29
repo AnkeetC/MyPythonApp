@@ -44,10 +44,22 @@ jobs:
           # Your test execution
 
       - name: Build Docker Image
-        run: |
+        run: | 
           docker build -t ankeetchauhan505/hello-world-app:latest .
 
       - name: Deploy to Minikube
         run: |
           kubectl create deployment hello-world-app --image=ankeetchauhan505/hello-world-app:latest --port=8080
-          kubectl port-forward deployment/hello-world-app 8080:8080
+          #kubectl port-forward deployment/hello-world-app 8080:8080
+          kubectl expose deployment hello-world-app --type=NodePort --port=8080
+          kubectl get service hello-world-app -o jsonpath='{.spec.ports[0].nodePort}'
+
+    - name: Get NodePort
+      run: |
+        NODE_PORT=$(kubectl get service hello-world-app -o jsonpath='{.spec.ports[0].nodePort}')
+        echo "NodePort: $NODE_PORT"
+
+    - name: Access Application
+      run: |
+        curl http://localhost:$NODE_PORT
+
