@@ -40,9 +40,7 @@ jobs:
 
       - name: Run Tests
         run: |
-           pip install pytest
-           export PYTHONPATH=app
-           pytest
+           pytest 
          
       - name: Build Docker Image
         run: | 
