@@ -72,14 +72,15 @@ As an add on I have added deployment.yml and service.yml file as will in my git 
 ## Monitoring and Logging
 Basic monitoring and logging are set up using Prometheus, Prometheus Node Exporter, and Grafana. 
 Alerts or notifications are configured for deployment failures.
+configuring alerts using Prometheus and Grafana.
 
-# This README.md file serves as documentation for the setup and configuration of the entire CI/CD process.
+### This README.md file serves as documentation for the setup and configuration of the entire CI/CD process.
 
-# All required step are mentioned in the workflow file, you can replace you python application and resue the workflow file to BUILD/TEST/DEPLOY your application.
-
-
-
+### All required steps are mentioned in the workflow file, you can replace your Python application and resue the workflow file to BUILD/TEST/DEPLOY your application. I have also added the step in my GitHub workflow file so that it can run using the deployment and service files and complete the process.
 
 
-   
+<img width="1434" alt="Screenshot 2023-11-30 at 12 05 24 PM" src="https://github.com/AnkeetC/MyPythonApp/assets/115153160/c0c8e3dc-841b-405b-9fbf-6ab356d732af">
+
+
+
 
