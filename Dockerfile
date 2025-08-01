@@ -1,5 +1,5 @@
 # Dockerfile
-FROM python:3.8
+FROM python:3.14.0rc1
 
 WORKDIR /app
 
